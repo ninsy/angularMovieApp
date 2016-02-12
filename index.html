@@ -14,11 +14,21 @@
   <body ng-controller="MovieCtrl as ctrl">
 
     <div class="app-wrap">
-      <header class='navbar navbar-inverse'>
+      <header class='navbar navbar-inverse navbar-collapse'>
         <div class="wrapper">
           <a ui-sref="movies" class="navbar-brand">
             Movie App
           </a>
+        </div>
+        <div id="dropdown-menu" class="navbar navbar-nav navbar-left">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort by...
+          </button>
+          <span class="caret"></span>
+          <ul class="dropdown-menu">
+            <li ng-click="ctrl.sortBy('price')"><a href="#">Price</a></li>
+            <li ng-click="ctrl.sortBy('name')"><a href="#">Name</a></li>
+          </ul>
         </div>
         <div>
           <a href="https://github.com/ninsy" class="nav navbar-nav navbar-right">
@@ -31,10 +41,13 @@
 
       <div class="col-sm-4">
         <div ng-if="ctrl.isSelected" class="details">
-          <p>Price: {{ctrl.selectedMovie.price}}</p>
+          <p>
+            <span ng-if="ctrl.isBargain(ctrl.selectedMovie.price)" class="bargain">Promocja!</span>
+            Price: {{ ctrl.checkPrice(ctrl.selectedMovie.price) }} PLN
+          </p>
           <p>Duration: {{ctrl.selectedMovie.duration}}</p>
           <p>Available hours:</p>
-          <div ng-repeat="hour in ctrl.selectedMovie.time">
+          <div ng-repeat="hour in ctrl.selectedMovie.time | checkHour">
             {{hour}}
           </div>
         </div>
@@ -42,10 +55,9 @@
 
       <div class="col-sm-8">
         <div
-          ng-repeat="movie in ctrl.movies"
+          ng-repeat="movie in ctrl.movies | orderBy:ctrl.sortingBy"
           ng-class="{'active':ctrl.isSelectedMovie(movie.name)}">
-
-
+          
             <a href="#" ng-click="ctrl.setCurrentMovie(movie)">
               <button class="btn btn-default btn-block">
                 {{movie.name}}
@@ -54,7 +66,6 @@
 
         </div>
       </div>
-
     </div>
 
 
@@ -63,6 +74,7 @@
 
   </body>
 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.min.js"></script>
       <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.10.3/TweenMax.min.js"></script>

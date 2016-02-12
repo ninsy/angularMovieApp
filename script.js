@@ -19,17 +19,8 @@ angular.module("movieApp", ['ui.router'])
           console.log(error)
         })
         .finally(function() {
-          console.log("YAY")
+
         })
-    };
-
-    ctrl.getTimeDetails = function() {
-
-      ctrl.moviesDict = {};
-
-      _.forEach(ctrl.movies, function(m) {
-        ctrl.moviesDict[m.name] = m.time
-      })
     };
 
     ctrl.setCurrentMovie = function(movie) {
@@ -39,6 +30,25 @@ angular.module("movieApp", ['ui.router'])
 
     ctrl.isSelectedMovie = function(name) {
       ctrl.isSelected !== false && ctrl.selectedMovie.name == name;
+    }
+
+    ctrl.sortBy = function(name) {
+
+      if(name in ctrl.movies[0]) {
+        console.log("Sort by " + name);
+        ctrl.sortingBy = name;
+      }
+    }
+
+    ctrl.checkPrice = function(price) {
+      price = parseInt(price);
+      if (price >= 50) return "Pow. 50";
+      else return price;
+    }
+
+    ctrl.isBargain = function(price) {
+      if(parseInt(price) <= 5) return true;
+      else return false;
     }
 
     ctrl.getMovies();
@@ -59,4 +69,20 @@ angular.module("movieApp", ['ui.router'])
       fetchMovies: fetchMovies
     }
 
-  })
+  }).filter("checkHour", function() {
+
+    return function(hourArray) {
+
+      _.remove(hourArray, function(t) {
+
+        var now = new Date();
+        var stringifyTime = t.toString()
+        var movieTime = new Date(now.getFullYear().toString() + " " + (now.getMonth()+1).toString() + " " + now.getDate().toString() + " " + stringifyTime)
+
+        if(now > movieTime) return t;
+      });
+
+      return hourArray
+    }
+
+  });
